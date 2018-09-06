@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1536274655275.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "ED2D9E9C",
+    "lastKnownWriteTime" : 1536274852,
+    "last_content_update" : -2147483648,
+    "path" : "H:/VCH files - Nayef/2018-09-06_revenue-per-employee/src/2018-09-07_revenue-per-employee.R",
+    "project_path" : "src/2018-09-07_revenue-per-employee.R",
+    "properties" : {
+        "cursorPosition" : "12,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

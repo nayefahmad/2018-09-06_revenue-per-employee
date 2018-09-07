@@ -69,10 +69,10 @@ p1.rev.versus.emp <- df2.companies.clean %>%
       scale_y_continuous(limits = c(0, 5.5e11)) +  # companies with revenue in range [22,000, ...]
       
       geom_smooth(method = "lm", 
-                  se = FALSE) + 
+                  se = TRUE) + 
       geom_smooth(col = "firebrick", 
                   linetype = "dashed", 
-                  se = TRUE) + 
+                  se = FALSE) + 
       
       labs(x = "Num of employees", 
            y = "Revenue") + 
@@ -103,3 +103,32 @@ p2.rev.versus.emp.logged <- df2.companies.clean %>%
       
       theme_classic(base_size = 14); p2.rev.versus.emp.logged
 
+
+
+
+
+# 4) regression models: ------------------
+# > first model: ----- 
+m1.rev.emp <- lm(revenue ~ employees, data = df2.companies.clean)
+summary(m1.rev.emp)
+
+# diagnostics: 
+par(mfrow = c(2,2))
+plot(m1.rev.emp)
+
+# row 1 is highly influential on the regression. Row 5 might be a problem too. 
+
+df2.companies.clean %>% slice(-c(1, 5))
+
+# > model without influential points: --------
+m2.rev.emp.slice <- lm(revenue ~ employees, 
+                       data = df2.companies.clean %>% slice(-c(1, 5)))
+summary(m2.rev.emp.slice)
+
+# diagnostics: 
+plot(m2.rev.emp.slice)  # is this better?? 
+
+
+# > log-log model: ---------
+m3.log <- lm(log(revenue) ~ log(employees), data = df2.companies.clean)
+summary(m3.log)

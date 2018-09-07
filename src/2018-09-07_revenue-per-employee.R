@@ -88,8 +88,34 @@ p1.rev.versus.emp <- df2.companies.clean %>%
 
 
 
-
-
+# let's highlight those financial companies (n=14): 
+p2.financials <- df2.companies.clean %>%
+      mutate(isfinancial = ifelse(industry == "Financials", 1, 0) %>% as.factor) %>% 
+      
+      ggplot(aes(x = employees, 
+                 y = revenue)) + 
+      geom_point(aes(colour = isfinancial)) + 
+      stat_smooth(aes(group = isfinancial,
+                      colour = isfinancial),
+                  method = "lm",
+                  fullrange = TRUE,
+                  se = FALSE,
+                  linetype = "dashed", 
+                  size = .3) +
+      
+      scale_x_continuous(limits = c(0, max(df2.companies.clean$employees))) +  # companies with num employees in range [150, 3.2e6]
+      scale_y_continuous(limits = c(0, 5.5e11)) +  # companies with revenue in range [22,000, ...]
+      
+      geom_smooth(method = "lm", 
+                  se = TRUE) + 
+      # geom_smooth(col = "firebrick", 
+      #             linetype = "dashed", 
+      #             se = FALSE) + 
+      
+      labs(x = "Num of employees", 
+           y = "Revenue in dollars") + 
+      
+      theme_classic(base_size = 14); p2.financials
 
 
 

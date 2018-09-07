@@ -89,29 +89,6 @@ p1.rev.versus.emp <- df2.companies.clean %>%
 
 
 
-# with log axes: probably not a good idea
-# p2.rev.versus.emp.logged <- df2.companies.clean %>%
-#       ggplot(aes(x = log(employees), 
-#                  y = log(revenue))) + 
-#       geom_point() + 
-#       
-#       # scale_x_continuous(limits = c(5, max(log(df2.companies.clean$employees)))) +  # companies with num employees in range [150, 3.2e6]
-#       # scale_y_continuous(limits = c(20, max(log(df2.companies.clean$revenue)))) +  # companies with revenue in range [22,000, ...]
-#       
-#       # scale_x_log10() + 
-#       # scale_y_log10() + 
-#       
-#       geom_smooth(method = "lm", 
-#                   se=FALSE) + 
-#       geom_smooth(col = "firebrick", 
-#                   linetype = "dashed", 
-#                   se = FALSE) + 
-#       
-#       
-#       labs(x = "log of num employees", 
-#            y = "log of revenue") + 
-#       
-#       theme_classic(base_size = 14); p2.rev.versus.emp.logged
 
 
 
@@ -138,7 +115,3 @@ summary(m2.rev.emp.slice)
 # diagnostics: 
 plot(m2.rev.emp.slice)  # is this better?? 
 
-
-# > log-log model: ---------
-m3.log <- lm(log(revenue) ~ log(employees), data = df2.companies.clean)
-summary(m3.log)

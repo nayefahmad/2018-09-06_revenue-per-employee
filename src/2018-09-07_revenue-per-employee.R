@@ -119,6 +119,38 @@ p2.financials <- df2.companies.clean %>%
 
 
 
+# let's drop walmart and China nat'l petroleum: and see what happens: 
+p3.no.walmart <- df2.companies.clean %>%
+      filter(!name %in% c("Walmart", "China National Petroleum")) %>% 
+      
+      ggplot(aes(x = employees, 
+                 y = revenue)) + 
+      geom_point(aes(colour = industry)) + 
+      stat_smooth(aes(group = industry,
+                      colour = industry),
+                  method = "lm",
+                  fullrange = FALSE,
+                  se = FALSE,
+                  linetype = "dashed", 
+                  size = .3) +
+      
+      scale_x_continuous(limits = c(0, max(df2.companies.clean$employees))) +  # companies with num employees in range [150, 3.2e6]
+      scale_y_continuous(limits = c(0, 5.5e11)) +  # companies with revenue in range [22,000, ...]
+      
+      geom_smooth(method = "lm", 
+                  se = TRUE, 
+                  fullrange = TRUE) + 
+      # geom_smooth(col = "firebrick", 
+      #             linetype = "dashed", 
+      #             se = FALSE) + 
+      
+      labs(x = "Num of employees", 
+           y = "Revenue in dollars") + 
+      
+      theme_classic(base_size = 14); p3.no.walmart
+
+
+
 
 # 4) regression models: ------------------
 # > first model: ----- 

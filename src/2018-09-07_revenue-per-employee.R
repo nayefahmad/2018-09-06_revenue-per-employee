@@ -63,45 +63,55 @@ str(df2.companies.clean)
 p1.rev.versus.emp <- df2.companies.clean %>%
       ggplot(aes(x = employees, 
                  y = revenue)) + 
-      geom_point(aes(col = industry)) + 
+      geom_point(aes(colour = industry)) + 
+      stat_smooth(aes(group = industry,
+                      colour = industry),
+                  method = "lm",
+                  fullrange = FALSE,
+                  se = FALSE,
+                  linetype = "dashed", 
+                  size = .3) +
       
       scale_x_continuous(limits = c(0, max(df2.companies.clean$employees))) +  # companies with num employees in range [150, 3.2e6]
       scale_y_continuous(limits = c(0, 5.5e11)) +  # companies with revenue in range [22,000, ...]
       
       geom_smooth(method = "lm", 
                   se = TRUE) + 
-      geom_smooth(col = "firebrick", 
-                  linetype = "dashed", 
-                  se = FALSE) + 
+      # geom_smooth(col = "firebrick", 
+      #             linetype = "dashed", 
+      #             se = FALSE) + 
       
       labs(x = "Num of employees", 
-           y = "Revenue") + 
+           y = "Revenue in dollars") + 
       
       theme_classic(base_size = 14); p1.rev.versus.emp
 
 
 
 
-# with log axes: 
-p2.rev.versus.emp.logged <- df2.companies.clean %>%
-      ggplot(aes(x = log(employees), 
-                 y = log(revenue))) + 
-      geom_point(aes(col = industry)) + 
-      
-      scale_x_continuous(limits = c(5, max(log(df2.companies.clean$employees)))) +  # companies with num employees in range [150, 3.2e6]
-      scale_y_continuous(limits = c(20, max(log(df2.companies.clean$revenue)))) +  # companies with revenue in range [22,000, ...]
-      
-      geom_smooth(method = "lm", 
-                  se=FALSE) + 
-      geom_smooth(col = "firebrick", 
-                  linetype = "dashed", 
-                  se = FALSE) + 
-      
-      
-      labs(x = "log of num employees", 
-           y = "log of revenue") + 
-      
-      theme_classic(base_size = 14); p2.rev.versus.emp.logged
+# with log axes: probably not a good idea
+# p2.rev.versus.emp.logged <- df2.companies.clean %>%
+#       ggplot(aes(x = log(employees), 
+#                  y = log(revenue))) + 
+#       geom_point() + 
+#       
+#       # scale_x_continuous(limits = c(5, max(log(df2.companies.clean$employees)))) +  # companies with num employees in range [150, 3.2e6]
+#       # scale_y_continuous(limits = c(20, max(log(df2.companies.clean$revenue)))) +  # companies with revenue in range [22,000, ...]
+#       
+#       # scale_x_log10() + 
+#       # scale_y_log10() + 
+#       
+#       geom_smooth(method = "lm", 
+#                   se=FALSE) + 
+#       geom_smooth(col = "firebrick", 
+#                   linetype = "dashed", 
+#                   se = FALSE) + 
+#       
+#       
+#       labs(x = "log of num employees", 
+#            y = "log of revenue") + 
+#       
+#       theme_classic(base_size = 14); p2.rev.versus.emp.logged
 
 
 

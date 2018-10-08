@@ -108,6 +108,30 @@ p3.logged.both.axis <- p2.logged.x +
 
 
 # 4) Select random LSA in bottom and top decile of GDP -------
+set.seed(2) 
+msa1.gdp.per.cap <- df3.gdp.and.pop %>%
+      filter(pop2017 < quantile(df3.gdp.and.pop$pop2017,
+                                0.10, na.rm = TRUE)) %>% 
+      sample_n(1) %>% 
+      select(msa, 
+             gdp_2017, 
+             pop2017) %>%
+      mutate(gdp.per.cap = gdp_2017/pop2017*1e6) %>% 
+      pull(gdp.per.cap) %>% print
+
+
+set.seed(2) 
+msa2.gdp.per.cap <- df3.gdp.and.pop %>%
+      filter(pop2017 < quantile(df3.gdp.and.pop$pop2017,
+                                0.90, na.rm = TRUE)) %>% 
+      sample_n(1) %>% 
+      select(msa, 
+             gdp_2017, 
+             pop2017) %>% 
+      mutate(gdp.per.cap = gdp_2017/pop2017*1e6) %>% 
+      pull(gdp.per.cap) %>% print
+
+
 
 
 

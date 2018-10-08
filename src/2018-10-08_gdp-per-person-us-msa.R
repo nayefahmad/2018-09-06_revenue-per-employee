@@ -108,31 +108,43 @@ p3.logged.both.axis <- p2.logged.x +
 
 
 # 4) Select random LSA in bottom and top decile of GDP -------
-set.seed(2) 
-msa1.gdp.per.cap <- df3.gdp.and.pop %>%
+msa1 <- df3.gdp.and.pop %>%
       filter(pop2017 < quantile(df3.gdp.and.pop$pop2017,
                                 0.10, na.rm = TRUE)) %>% 
       sample_n(1) %>% 
       select(msa, 
              gdp_2017, 
              pop2017) %>%
-      mutate(gdp.per.cap = gdp_2017/pop2017*1e6) %>% 
-      pull(gdp.per.cap) %>% print
+      mutate(gdp.per.cap = gdp_2017/pop2017*1e6) %>% print
 
 
-set.seed(2) 
-msa2.gdp.per.cap <- df3.gdp.and.pop %>%
-      filter(pop2017 < quantile(df3.gdp.and.pop$pop2017,
-                                0.90, na.rm = TRUE)) %>% 
+msa2 <- df3.gdp.and.pop %>%
+      filter(pop2017 > quantile(df3.gdp.and.pop$pop2017,
+                                0.40, na.rm = TRUE),
+             pop2017 < quantile(df3.gdp.and.pop$pop2017,
+                                0.60, na.rm = TRUE)) %>% 
       sample_n(1) %>% 
       select(msa, 
              gdp_2017, 
              pop2017) %>% 
-      mutate(gdp.per.cap = gdp_2017/pop2017*1e6) %>% 
-      pull(gdp.per.cap) %>% print
+      mutate(gdp.per.cap = gdp_2017/pop2017*1e6) %>% print
 
 
+# > get pop numbers and gdp per cap: ----
+msa1.gdp.per.cap <- msa1 %>% pull(gdp.per.cap) %>% print
 
+msa2.pop <- msa2 %>% pull(pop2017) %>% print  # predictor var
+msa2.gdp <- msa2 %>% pull(gdp_2017) %>% print  # response var
+
+# > estimate gdp per cap for larger msa using ratio
+# of smaller msa: -----
+msa2.estimate.gdp <- (msa1.gdp.per.cap * msa2.pop/1e6) %>% print
+
+msa2.diff.prop <- (msa2.gdp - msa2.estimate.gdp)/msa2.gdp
+msa2.diff.prop
+
+# +ve difference means we are underestimating actual GDP
+# -ve difference means we are overestimating actual GDP
 
 
 # 5) Use GDP per cap to estimate unknown msa GDP: ------

@@ -68,7 +68,8 @@ p1.gdp.per.person <- df3.gdp.and.pop %>%
                  y = gdp_2017)) + 
       geom_point(alpha = 0.5)  + 
       geom_smooth(col = "dodgerblue4", 
-                  se = FALSE) +
+                  se = FALSE, 
+                  size = 0.5) +
       geom_smooth(method = "lm", 
                   colour = "red", 
                   se = FALSE) + 
@@ -105,7 +106,9 @@ p2.logged.x <- p1.gdp.per.person +
 p3.logged.both.axis <- p2.logged.x + 
       scale_y_log10(); p3.logged.both.axis
 
-
+ggsave(here("results", 
+            "dst", 
+            "2018-11-20_loggdp_vs_logpop.pdf"))
 
 # 4) Select random LSA in bottom and top decile of GDP -------
 msa1 <- df3.gdp.and.pop %>%
@@ -152,5 +155,42 @@ msa2.diff.prop
 
 # 6) Use log-log linear relationship to estimate unknown msa GDP: ------
 
+# 7) regression models -------
+# > 7.1) unlogged model -----
+m1.unlogged <- lm(gdp_2017 ~ pop2017, 
+                  data = df3.gdp.and.pop)
+
+summary(m1.unlogged)
+glance(m1.unlogged)
+
+par(mfrow = c(2,2))
+plot(m1.unlogged)
+
+# 1) As fitted values increase, resids become 
+# negatively skewed. 
+# 2) pretty significant non-normality 
+# 3) and 4) at least one very significant outlier
 
 
+# > 7.2) logged model -----
+m2.logged <- lm(log(gdp_2017) ~ log(pop2017),
+                data = df3.gdp.and.pop)
+
+summary(m2.logged)  
+# note: you can't compare R^2 for models with different 
+# response variables 
+
+glance(m2.logged)
+
+par(mfrow = c(2,2))
+plot(m2.logged)
+# this looks pretty good! 
+
+
+
+
+# Write outputs: ---------------
+write_csv(df3.gdp.and.pop,
+          here("results", 
+               "dst", 
+               "us-msa-gdp-and-population.csv"))

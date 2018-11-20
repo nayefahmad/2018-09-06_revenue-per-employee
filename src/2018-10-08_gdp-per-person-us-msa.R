@@ -4,9 +4,10 @@
 # GPD Per person in US Metropolitan Statistical Areas
 #*******************************************************
 
-library("tidyverse")
-library("here") 
-
+library(tidyverse)
+library(here) 
+library(broom)
+library(ggrepel)
 
 # 1) Read in and clean GDP data: --------
 # source: https://www.bea.gov/data/gdp/gdp-metropolitan-area 
@@ -65,7 +66,8 @@ str(df3.gdp.and.pop)
 # 4) Graph the relationship: -------
 p1.gdp.per.person <- df3.gdp.and.pop %>% 
       ggplot(aes(x = pop2017, 
-                 y = gdp_2017)) + 
+                 y = gdp_2017, 
+                 label = msa)) + 
       geom_point(alpha = 0.5)  + 
       geom_smooth(col = "dodgerblue4", 
                   se = FALSE, 
@@ -99,7 +101,9 @@ p2.logged.x <- p1.gdp.per.person +
                     breaks = c(1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8), 
                     labels = c("1", "10", "100", "1000", "10,000", 
                                "100,000", "1,000,000", "10,000,000", 
-                               "100,000,000")); p2.logged.x
+                               "100,000,000")) + 
+      scale_y_log10(breaks = c(1e4, 1e5, 1e6), 
+                    labels = c("10,000", "100,000", "1,000,000")); p2.logged.x
     
 
 
@@ -155,6 +159,10 @@ msa2.diff.prop
 
 # 6) Use log-log linear relationship to estimate unknown msa GDP: ------
 
+
+
+
+
 # 7) regression models -------
 # > 7.1) unlogged model -----
 m1.unlogged <- lm(gdp_2017 ~ pop2017, 
@@ -186,6 +194,50 @@ par(mfrow = c(2,2))
 plot(m2.logged)
 # this looks pretty good! 
 
+# Which MSAs are the biggest outliers? 
+df4.logged.model.output <- 
+      df3.gdp.and.pop %>% 
+      select(msa, 
+             gdp_2017, 
+             pop2017) %>% 
+      filter(complete.cases(.)) %>% 
+      
+      bind_cols(augment(m2.logged)) %>% 
+      
+      mutate(abs.resid = abs(.resid)) %>% 
+      arrange(desc(abs.resid))
+
+df4.logged.model.output %>% head
+
+
+# identify outliers on plot: 
+p4.outliers <- p2.logged.x + 
+      
+      geom_point(data = df3.gdp.and.pop %>% 
+                       slice(c(229, 312, 59)),
+                 colour = "red", 
+                 size = 2) + 
+      geom_text_repel(data = df3.gdp.and.pop %>%
+                            slice(c(229, 312, 59)),
+                      nudge_x = -3, 
+                      segment.colour = "grey80") + 
+      
+      labs(title = "There's something special about Casper, Midland, and San Jose", 
+           subtitle = "These areas' GDPs deviate most significantly from the overall relationship between population size and GDP. \nIn other words, they are more economically productive than we would expect, given their population sizes. \n\n", 
+           caption = "\n\nData sources: \nhttps://www.bea.gov/data/gdp/gdp-metropolitan-area \nhttps://www2.census.gov/programs-surveys/popest/datasets/2010-2017/metro/totals", 
+           x = "MSA population in 2017", 
+           y = "MSA GDP in 2017 (millions of USD)") +
+      
+      
+      theme(axis.text.x = element_text(angle = 45, 
+                                       hjust = 1), 
+            plot.caption = element_text(hjust = -0, 
+                                        size = 8)); p4.outliers
+
+ggsave(here("results", 
+            "dst", 
+            "2018-11-20_outliers-in-terms-of-GDP.pdf"), 
+       width = 8)
 
 
 
